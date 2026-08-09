@@ -1,0 +1,34 @@
+export enum Prioridad {
+  P1 = 'P1',
+  P2 = 'P2',
+  P3 = 'P3',
+  P4 = 'P4',
+}
+
+export enum EstadoTarea {
+  POR_HACER = 'POR_HACER',
+  EN_PROGRESO = 'EN_PROGRESO',
+  CIERRE_PENDIENTE = 'CIERRE_PENDIENTE',
+  HECHA = 'HECHA',
+  REPROGRAMADA = 'REPROGRAMADA',
+  DESCARTADA = 'DESCARTADA',
+  DELEGADA = 'DELEGADA',
+  DIVIDIDA = 'DIVIDIDA',
+}
+
+export enum SemaforoDia {
+  VERDE = 'VERDE',
+  AMBAR = 'AMBAR',
+  ROJO = 'ROJO',
+}
+
+export enum EventoTransicion {
+  INICIAR = 'INICIAR',
+  FINALIZAR = 'FINALIZAR',
+  CONFIRMAR_HECHA = 'CONFIRMAR_HECHA',
+  REPROGRAMAR = 'REPROGRAMAR',
+  REACTIVAR = 'REACTIVAR',
+  DESCARTAR = 'DESCARTAR',
+  DELEGAR = 'DELEGAR',
+  DIVIDIR = 'DIVIDIR',
+}
