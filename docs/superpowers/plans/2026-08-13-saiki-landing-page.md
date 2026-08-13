@@ -83,8 +83,8 @@ git commit -m "chore: add logo asset for landing page"
 
   <header class="hero">
     <img src="img/logo.png" alt="Saiki" class="logo">
-    <h1>Saiki 再起 — volvé a empezar, sin perder el control</h1>
-    <p class="subtitle">El planificador que respeta tu capacidad real. Organizá tus tareas sin sobrecargarte, revisá tu mes y cerrá cada semestre con claridad.</p>
+    <h1>Saiki 再起 — vuelve a empezar, sin perder el control</h1>
+    <p class="subtitle">El planificador que respeta tu capacidad real. Organiza tus tareas sin sobrecargarte, revisa tu mes y cierra cada semestre con claridad.</p>
     <a href="https://REPLACE_WITH_LEMONSQUEEZY_CHECKOUT_URL" class="cta-button">Comprar Saiki — USD 10.90 (pago único)</a>
     <p class="cta-note">Licencia de por vida. Sin suscripciones.</p>
   </header>
@@ -93,7 +93,7 @@ git commit -m "chore: add logo asset for landing page"
 
     <section class="problem">
       <h2>La mayoría de los planificadores te dejan sobrecargar la lista hasta que todo colapsa</h2>
-      <p>Saiki funciona distinto: te avisa cuando tu carga de tareas excede tu capacidad real, en vez de dejarte acumular pendientes hasta el agotamiento. Menos lista infinita, más control real sobre lo que podés hacer.</p>
+      <p>Saiki funciona distinto: te avisa cuando tu carga de tareas excede tu capacidad real, en vez de dejarte acumular pendientes hasta el agotamiento. Menos lista infinita, más control real sobre lo que puedes hacer.</p>
     </section>
 
     <section class="features">
@@ -117,7 +117,7 @@ git commit -m "chore: add logo asset for landing page"
         <article class="feature-card">
           <span class="feature-icon">🔄</span>
           <h3>Reprogramar y repriorizar</h3>
-          <p>Movés tareas de fecha o cambiás su prioridad sin perder el registro de por qué lo hiciste.</p>
+          <p>Mueves tareas de fecha o cambias su prioridad sin perder el registro de por qué lo hiciste.</p>
         </article>
       </div>
     </section>
@@ -177,13 +177,13 @@ git commit -m "chore: add logo asset for landing page"
         <dd>Windows, macOS y Linux (.deb / AppImage).</dd>
 
         <dt>¿Cuántos dispositivos puedo activar por licencia?</dt>
-        <dd>Uno. Si cambiás de computadora, escribinos y reactivamos tu licencia en el nuevo equipo.</dd>
+        <dd>Uno. Si cambias de computadora, escríbenos y reactivamos tu licencia en el nuevo equipo.</dd>
 
         <dt>¿Cómo recibo el instalador?</dt>
         <dd>Al comprar, recibís un correo con tu <code>license_key</code> y el link de descarga del instalador.</dd>
 
         <dt>¿Hay reembolsos?</dt>
-        <dd>Si algo no funciona como esperabas, escribinos dentro de los 14 días posteriores a la compra.</dd>
+        <dd>Si algo no funciona como esperabas, escríbenos dentro de los 14 días posteriores a la compra.</dd>
       </dl>
     </section>
 
