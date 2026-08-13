@@ -64,7 +64,7 @@ git commit -m "chore: add logo asset for landing page"
 
 **Interfaces:**
 - Consumes: `web/img/logo.png` (Task 1)
-- Produces: `web/styles.css` link (consumed by Task 3), two elements with class `cta-button` and `href="https://REPLACE_WITH_LEMONSQUEEZY_CHECKOUT_URL"` (consumed by Task 8), `<img>` tags expecting `web/img/screenshot-1.png`, `web/img/screenshot-2.png`, `web/img/screenshot-3.png` (consumed by Task 4/user-supplied)
+- Produces: `web/styles.css` link (consumed by Task 3), two elements with class `cta-button` and `href="https://REPLACE_WITH_LEMONSQUEEZY_CHECKOUT_URL"` (consumed by Task 8), `<img>` tags expecting `web/img/screenshot-1.png`, `web/img/screenshot-2.png`, `web/img/screenshot-3.png` (consumed by Task 4), a `.resilience-grid` of five `.resilience-card` elements each with a state-specific modifier class (`resilience-optimismo`, `resilience-tranquilidad`, `resilience-certeza`, `resilience-fortaleza`, `resilience-neutralidad`) and a `.resilience-dot` child (styled by Task 3)
 
 - [ ] **Step 1: Write `web/index.html`**
 
@@ -122,6 +122,38 @@ git commit -m "chore: add logo asset for landing page"
       </div>
     </section>
 
+    <section class="resilience">
+      <h2>Los 5 Estados de Resiliencia de Saiki</h2>
+      <p class="section-intro">Saiki no es solo un tablero de tareas: su paleta de color refleja en qué estado de tu resiliencia personal estás, día a día.</p>
+      <div class="resilience-grid">
+        <article class="resilience-card resilience-optimismo">
+          <span class="resilience-dot"></span>
+          <h3>Optimismo</h3>
+          <p>Es el motor mental con el que esperas resultados favorables y confías en tu capacidad para superar los problemas, una capacidad que puedes aprender a desarrollar día a día.</p>
+        </article>
+        <article class="resilience-card resilience-tranquilidad">
+          <span class="resilience-dot"></span>
+          <h3>Tranquilidad</h3>
+          <p>Es la calma interior y el equilibrio mental que te permiten pensar con claridad cuando las cosas se complican, algo que puedes cultivar paso a paso en tu rutina.</p>
+        </article>
+        <article class="resilience-card resilience-certeza">
+          <span class="resilience-dot"></span>
+          <h3>Certeza</h3>
+          <p>Es la seguridad interna de que tienes los recursos necesarios para superar la adversidad, aunque a veces dudes de ti mismo.</p>
+        </article>
+        <article class="resilience-card resilience-fortaleza">
+          <span class="resilience-dot"></span>
+          <h3>Fortaleza</h3>
+          <p>Es la fuerza interior y la firmeza de ánimo que te permiten resistir la presión, soportar el sufrimiento y actuar de manera activa para superar los problemas, en lugar de rendirte.</p>
+        </article>
+        <article class="resilience-card resilience-neutralidad">
+          <span class="resilience-dot"></span>
+          <h3>Neutralidad</h3>
+          <p>Es tu capacidad para absorber un impacto o una perturbación externa sin mejorar, pero tampoco empeorar tu estado previo; simplemente sigues en pie, listo para dar el siguiente paso cuando puedas.</p>
+        </article>
+      </div>
+    </section>
+
     <section class="screenshots">
       <h2>Así se ve Saiki</h2>
       <div class="screenshot-grid">
@@ -172,9 +204,10 @@ Run:
 grep -c 'class="cta-button"' web/index.html
 grep -c 'REPLACE_WITH_LEMONSQUEEZY_CHECKOUT_URL' web/index.html
 grep -c '<section' web/index.html
+grep -c 'resilience-card' web/index.html
 grep -o 'img/screenshot-[0-9].png' web/index.html | sort -u
 ```
-Expected: `2`, `2`, `5`, and the three distinct `img/screenshot-1.png` / `-2.png` / `-3.png` paths listed.
+Expected: `2`, `2`, `6`, `5`, and the three distinct `img/screenshot-1.png` / `-2.png` / `-3.png` paths listed.
 
 - [ ] **Step 3: Commit**
 
@@ -297,6 +330,52 @@ section { padding: 56px 0; border-top: 1px solid var(--border); }
 .feature-card h3 { margin: 12px 0 8px; font-size: 18px; }
 .feature-card p { margin: 0; color: var(--muted); font-size: 15px; }
 
+.resilience {
+  --optimismo: #d97c86;
+  --tranquilidad: #8a7cc8;
+  --certeza: #9ca86b;
+  --fortaleza: #3c6e91;
+  --neutralidad: #6b8cae;
+}
+
+.section-intro {
+  text-align: center;
+  max-width: 640px;
+  margin: -16px auto 32px;
+  color: var(--muted);
+  font-size: 16px;
+}
+
+.resilience-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+}
+
+.resilience-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 22px;
+}
+
+.resilience-dot {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  margin-bottom: 12px;
+}
+
+.resilience-card h3 { margin: 0 0 8px; font-size: 17px; }
+.resilience-card p { margin: 0; color: var(--muted); font-size: 14px; }
+
+.resilience-optimismo .resilience-dot { background: var(--optimismo); }
+.resilience-tranquilidad .resilience-dot { background: var(--tranquilidad); }
+.resilience-certeza .resilience-dot { background: var(--certeza); }
+.resilience-fortaleza .resilience-dot { background: var(--fortaleza); }
+.resilience-neutralidad .resilience-dot { background: var(--neutralidad); }
+
 .screenshot-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -336,7 +415,7 @@ footer a { color: var(--accent); }
 
 Run:
 ```bash
-for c in hero logo subtitle cta-button cta-note problem features feature-grid feature-card feature-icon screenshots screenshot-grid pricing price faq; do
+for c in hero logo subtitle cta-button cta-note problem features feature-grid feature-card feature-icon resilience resilience-grid resilience-card resilience-dot screenshots screenshot-grid pricing price faq; do
   grep -q "\.$c" web/styles.css && echo "OK  .$c" || echo "MISSING .$c"
 done
 ```

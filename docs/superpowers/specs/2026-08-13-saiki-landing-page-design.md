@@ -33,10 +33,11 @@ Netlify se configura con **base directory = `web`**, por lo que solo construye/s
 1. **Hero**: logo, tagline, precio y botón "Comprar Saiki — USD 10.90 (pago único)".
 2. **Problema/solución**: sobrecarga cognitiva y cómo Saiki ayuda a manejarla.
 3. **Features**: tablero de tareas con límite de capacidad, auditoría mensual, cierre semestral, historial del camino, reprogramar/cambiar prioridad de tareas.
-4. **Capturas de pantalla**: 2-3 imágenes de la app en uso, generadas corriendo la app localmente durante la implementación.
-5. **Precio/CTA final**: repite el botón de compra.
-6. **FAQ**: plataformas soportadas (Windows, macOS, Linux — .deb/AppImage), 1 dispositivo por licencia, cómo pedir soporte.
-7. **Footer**: contacto (correo del autor).
+4. **Los 5 Estados de Resiliencia**: sección dedicada que explica el marco conceptual detrás de los 5 temas de color de Saiki (Optimismo, Tranquilidad, Certeza, Fortaleza, Neutralidad), cada uno con su definición en segunda persona provista por el autor. Un pequeño "dot" de color por card asocia cada estado a su tema visual real en la app.
+5. **Capturas de pantalla**: 3 capturas reales de la app (aportadas por el usuario en `imagenes de saiki/`), elegidas para mostrar variedad de vista (tablero/calendario) y tema (claro/oscuro).
+6. **Precio/CTA final**: repite el botón de compra.
+7. **FAQ**: plataformas soportadas (Windows, macOS, Linux — .deb/AppImage), 1 dispositivo por licencia, cómo pedir soporte.
+8. **Footer**: contacto (correo del autor).
 
 Sin build step: HTML/CSS/JS plano, sin frameworks ni dependencias nuevas en `node_modules` — evita cargar el toolchain de build en una máquina con 3.5GB de RAM.
 
