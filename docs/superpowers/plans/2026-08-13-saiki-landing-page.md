@@ -66,6 +66,8 @@ git commit -m "chore: add logo asset for landing page"
 - Consumes: `web/img/logo.png` (Task 1)
 - Produces: `web/styles.css` link (consumed by Task 3), two elements with class `cta-button` and `href="https://REPLACE_WITH_LEMONSQUEEZY_CHECKOUT_URL"` (consumed by Task 8), `<img>` tags expecting `web/img/screenshot-1.png`, `web/img/screenshot-2.png`, `web/img/screenshot-3.png` (consumed by Task 4), a `.resilience-grid` of five `.resilience-card` elements each with a state-specific modifier class (`resilience-optimismo`, `resilience-tranquilidad`, `resilience-certeza`, `resilience-fortaleza`, `resilience-neutralidad`) and a `.resilience-dot` child (styled by Task 3)
 
+> **Nota post-ejecución (2026-08-13):** las secciones "Features" y "Resiliencia" originalmente separadas más abajo fueron fusionadas en una sola sección `.bento` (Bento Grid) a pedido del usuario, después de completada esta tarea. `web/index.html` y `web/styles.css` en el repo son la fuente de verdad actual — el HTML/CSS de abajo documenta el diseño inicial pre-bento.
+
 - [ ] **Step 1: Write `web/index.html`**
 
 ```html
@@ -102,12 +104,12 @@ git commit -m "chore: add logo asset for landing page"
         <article class="feature-card">
           <span class="feature-icon">⚖️</span>
           <h3>Límite de capacidad</h3>
-          <p>Saiki te avisa cuando excedés tu capacidad antes de que sea tarde, en vez de dejarte acumular tareas sin freno.</p>
+          <p>Saiki te avisa cuando excedes tu capacidad antes de que sea tarde, en vez de dejarte acumular tareas sin freno.</p>
         </article>
         <article class="feature-card">
           <span class="feature-icon">📊</span>
           <h3>Auditoría mensual</h3>
-          <p>Revisá qué pasó cada mes: qué se cumplió, qué se postergó y por qué.</p>
+          <p>Revisa qué pasó cada mes: qué se cumplió, qué se postergó y por qué.</p>
         </article>
         <article class="feature-card">
           <span class="feature-icon">📆</span>
@@ -180,7 +182,7 @@ git commit -m "chore: add logo asset for landing page"
         <dd>Uno. Si cambias de computadora, escríbenos y reactivamos tu licencia en el nuevo equipo.</dd>
 
         <dt>¿Cómo recibo el instalador?</dt>
-        <dd>Al comprar, recibís un correo con tu <code>license_key</code> y el link de descarga del instalador.</dd>
+        <dd>Al comprar, recibes un correo con tu <code>license_key</code> y el link de descarga del instalador.</dd>
 
         <dt>¿Hay reembolsos?</dt>
         <dd>Si algo no funciona como esperabas, escríbenos dentro de los 14 días posteriores a la compra.</dd>

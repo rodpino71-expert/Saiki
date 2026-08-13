@@ -76,30 +76,13 @@ section { padding: 56px 0; border-top: 1px solid var(--border); }
 .problem h2 { font-size: 26px; }
 .problem p { color: var(--muted); font-size: 17px; }
 
-.features h2, .screenshots h2, .pricing h2, .faq h2 {
+.bento h2, .screenshots h2, .pricing h2, .faq h2 {
   text-align: center;
   font-size: 26px;
   margin-bottom: 36px;
 }
 
-.feature-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 24px;
-}
-
-.feature-card {
-  background: var(--card-bg);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 24px;
-}
-
-.feature-icon { font-size: 28px; }
-.feature-card h3 { margin: 12px 0 8px; font-size: 18px; }
-.feature-card p { margin: 0; color: var(--muted); font-size: 15px; }
-
-.resilience {
+.bento {
   --optimismo: #d97c86;
   --tranquilidad: #8a7cc8;
   --certeza: #9ca86b;
@@ -115,35 +98,48 @@ section { padding: 56px 0; border-top: 1px solid var(--border); }
   font-size: 16px;
 }
 
-.resilience-grid {
+.bento-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(4, 1fr);
+  grid-auto-rows: minmax(150px, auto);
+  grid-auto-flow: dense;
+  gap: 16px;
 }
 
-.resilience-card {
+.bento-tile {
   background: var(--card-bg);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 22px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
-.resilience-dot {
-  display: inline-block;
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
-  margin-bottom: 12px;
+.bento-lg { grid-column: span 2; grid-row: span 2; }
+.bento-wide { grid-column: span 2; }
+
+.bento-icon { font-size: 28px; margin-bottom: 12px; }
+.bento-tile h3 { margin: 0 0 8px; font-size: 17px; }
+.bento-tile p { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.45; }
+
+.bento-color { border: none; }
+.bento-color h3 { color: #fff; }
+.bento-color p { color: rgba(255, 255, 255, 0.9); }
+
+.bento-optimismo { background: var(--optimismo); }
+.bento-tranquilidad { background: var(--tranquilidad); }
+.bento-fortaleza { background: var(--fortaleza); }
+.bento-neutralidad { background: var(--neutralidad); }
+
+.bento-certeza { background: var(--certeza); }
+.bento-certeza h3, .bento-certeza p { color: var(--text); }
+.bento-certeza p { color: var(--text); opacity: 0.75; }
+
+@media (max-width: 640px) {
+  .bento-grid { grid-template-columns: repeat(2, 1fr); }
+  .bento-lg, .bento-wide { grid-column: span 2; }
 }
-
-.resilience-card h3 { margin: 0 0 8px; font-size: 17px; }
-.resilience-card p { margin: 0; color: var(--muted); font-size: 14px; }
-
-.resilience-optimismo .resilience-dot { background: var(--optimismo); }
-.resilience-tranquilidad .resilience-dot { background: var(--tranquilidad); }
-.resilience-certeza .resilience-dot { background: var(--certeza); }
-.resilience-fortaleza .resilience-dot { background: var(--fortaleza); }
-.resilience-neutralidad .resilience-dot { background: var(--neutralidad); }
 
 .screenshot-grid {
   display: grid;
