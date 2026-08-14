@@ -1,0 +1,9 @@
+{
+  "name": "saiki-web",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Landing page y backend de licencias de Saiki (Netlify)",
+  "engines": {
+    "node": ">=18"
+  }
+}
