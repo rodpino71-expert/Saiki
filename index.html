@@ -2455,12 +2455,18 @@ const activationForm = {
 async function intentarActivar() {
   const licenseKey = activationForm.input.value.trim();
   if (!licenseKey) return;
+  if (activationForm.btn.disabled) return;
 
   activationForm.btn.disabled = true;
   activationForm.btn.textContent = 'Activando...';
   activationForm.error.textContent = '';
 
-  const respuesta = await window.licenseAPI.activate(licenseKey);
+  let respuesta;
+  try {
+    respuesta = await window.licenseAPI.activate(licenseKey);
+  } catch {
+    respuesta = { ok: false, reason: 'service_unavailable' };
+  }
 
   if (respuesta && respuesta.ok) {
     document.getElementById('activationGate').classList.remove('show');
