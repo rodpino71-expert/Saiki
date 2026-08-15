@@ -27,6 +27,7 @@
       "preload.js",
       "preload-splash.js",
       "index.html",
+      "src/licencia/*.js",
       "splash.html",
       "package.json",
       "dist/**",

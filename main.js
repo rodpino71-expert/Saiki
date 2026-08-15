@@ -366,6 +366,7 @@ async function llamarBackendLicencia(ruta, body) {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body),
+      signal: AbortSignal.timeout(10000),
     });
     const data = await res.json();
     if (!data || typeof data !== 'object') {
@@ -377,24 +378,31 @@ async function llamarBackendLicencia(ruta, body) {
   }
 }
 
-function revalidarEnSegundoPlano(activacion) {
-  llamarBackendLicencia('/api/validate', {
-    license_key: activacion.license_key,
-    instance_id: activacion.instance_id,
-    device_id: activacion.device_id,
-  }).then((respuesta) => {
+async function revalidarEnSegundoPlano(activacion) {
+  try {
+    const respuesta = await llamarBackendLicencia('/api/validate', {
+      license_key: activacion.license_key,
+      instance_id: activacion.instance_id,
+      device_id: activacion.device_id,
+    });
     if (respuesta.ok && respuesta.token) {
       const payload = verifyToken(respuesta.token, ACTIVATION_PUBLIC_KEY_PEM);
       if (payload) {
         guardarActivacion({ token: respuesta.token, ...payload });
+        return true;
       }
+      return false;
     } else if (!respuesta.ok && respuesta.reason === 'revoked') {
       borrarActivacion();
+      return false;
     }
-  }).catch(() => {});
+    return false;
+  } catch {
+    return false;
+  }
 }
 
-ipcMain.handle('license:check-activation', () => {
+ipcMain.handle('license:check-activation', async () => {
   const activacion = leerActivacion();
   if (!activacion) return { activated: false };
 
@@ -406,8 +414,13 @@ ipcMain.handle('license:check-activation', () => {
     return { activated: true };
   }
 
-  revalidarEnSegundoPlano(activacion);
-  return { activated: dentroDePeriodoDeGracia(payload.issued_at, ahoraMs) };
+  if (dentroDePeriodoDeGracia(payload.issued_at, ahoraMs)) {
+    revalidarEnSegundoPlano(activacion);
+    return { activated: true };
+  }
+
+  const revalidada = await revalidarEnSegundoPlano(activacion);
+  return { activated: revalidada };
 });
 
 ipcMain.handle('license:activate', async (_event, licenseKey) => {

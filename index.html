@@ -347,11 +347,11 @@
   .btn-confirm-reprog { background: var(--primary); color: #fff; }
   .btn-cancel-reprog { background: var(--bg-main); color: var(--text-main); border: 1px solid var(--border); }
 
-  .activation-gate { display: none; position: fixed; inset: 0; z-index: 4000; background: var(--bg-main); flex-direction: column; align-items: center; justify-content: center; gap: 16px; text-align: center; padding: 24px; }
+  .activation-gate { display: none; position: fixed; inset: 0; z-index: 4000; background: var(--bg-main); flex-direction: column; align-items: center; justify-content: center; gap: 16px; text-align: center; padding: 24px; -webkit-app-region: drag; }
   .activation-gate.show { display: flex; }
   .activation-gate .activation-logo { font-size: 40px; }
-  .activation-gate input { font-size: 15px; padding: 10px 14px; border: 1px solid var(--border); border-radius: 6px; width: 280px; max-width: 80vw; text-align: center; }
-  .activation-gate button { font-size: 14px; padding: 10px 20px; border: none; border-radius: 6px; background: var(--primary); color: #fff; cursor: pointer; }
+  .activation-gate input { font-size: 15px; padding: 10px 14px; border: 1px solid var(--border); border-radius: 6px; width: 280px; max-width: 80vw; text-align: center; -webkit-app-region: no-drag; }
+  .activation-gate button { font-size: 14px; padding: 10px 20px; border: none; border-radius: 6px; background: var(--primary); color: #fff; cursor: pointer; -webkit-app-region: no-drag; }
   .activation-gate button:disabled { opacity: 0.6; cursor: default; }
   .activation-gate .activation-error { color: #c5221f; font-size: 13px; min-height: 18px; }
 
