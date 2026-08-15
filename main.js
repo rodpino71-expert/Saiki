@@ -367,7 +367,11 @@ async function llamarBackendLicencia(ruta, body) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body),
     });
-    return await res.json();
+    const data = await res.json();
+    if (!data || typeof data !== 'object') {
+      return { ok: false, reason: 'service_unavailable' };
+    }
+    return data;
   } catch {
     return { ok: false, reason: 'service_unavailable' };
   }
@@ -426,6 +430,10 @@ ipcMain.handle('license:activate', async (_event, licenseKey) => {
     return { ok: false, reason: 'service_unavailable' };
   }
 
-  guardarActivacion({ token: respuesta.token, ...payload });
+  try {
+    guardarActivacion({ token: respuesta.token, ...payload });
+  } catch {
+    return { ok: false, reason: 'storage_error' };
+  }
   return { ok: true };
 });
