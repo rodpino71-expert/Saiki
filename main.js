@@ -2,57 +2,53 @@ const { app, BrowserWindow, ipcMain, dialog } = require('electron');
 const path = require('path');
 const fs = require('fs');
 
-// 🔒 Archivo de datos en la carpeta personal del usuario
-const DATA_FILE = path.join(app.getPath('userData'), 'saiki-tareas.json'); // 🔹 Cambia el nombre a algo único
+const DATA_FILE = path.join(app.getPath('userData'), 'saiki-tareas.json');
 
-function createWindow() {
+// Motor de dominio compilado
+let dominio = null;
+try {
+  dominio = require('./dist/dominio/index.js');
+} catch (e) {
+  console.error('Motor de dominio no disponible. Ejecuta npm run build:dominio', e.message);
+}
+
+function createMainWindow() {
   const win = new BrowserWindow({
     width: 1280,
     height: 800,
     minWidth: 800,
     minHeight: 600,
-    title: 'Saiki - Tu guerrero de productividad',
+    title: '再起 Saiki -Volver a empezar-',
     frame: false,
-    backgroundColor: '#f0f2f5', // 🔹 Evita el parpadeo blanco al cargar
-    show: false, // 🔹 Muestra la ventana cuando esté lista
+    backgroundColor: '#f0f2f5',
+    show: false,
     webPreferences: {
-      nodeIntegration: false, // ✅ Ya lo tenías
-      contextIsolation: true, // ✅ Ya lo tenías
-      preload: path.join(__dirname, 'preload.js'), // ✅ Ya lo tenías
-      // 🔹 NUEVAS OPCIONES DE SEGURIDAD:
-      webSecurity: true, // 🔒 Habilita políticas de seguridad de Chromium
-      allowRunningInsecureContent: false, // 🔒 Bloquea contenido inseguro
-      sandbox: true, // 🔒 Habilita el sandbox de Chromium
-      disableBlinkFeatures: 'Auxclick,Autoplay' // 🔒 Desactiva características peligrosas
+      nodeIntegration: false,
+      contextIsolation: true,
+      preload: path.join(__dirname, 'preload.js'),
+      webSecurity: true,
+      allowRunningInsecureContent: false,
+      sandbox: true,
+      disableBlinkFeatures: 'Auxclick,Autoplay'
     }
-  });
-
-  // 🔹 Muestra la ventana cuando esté lista (evita parpadeo)
-  win.once('ready-to-show', () => {
-    win.show();
   });
 
   win.loadFile('index.html');
-
-  // Quitar la barra de menú nativa
   win.setMenuBarVisibility(false);
 
-  // Handlers para la barra de título personalizada
   ipcMain.on('window-min', () => win.minimize());
-  ipcMain.on('window-max', () => {
-    if (win.isMaximized()) {
-      win.restore();
-    } else {
-      win.maximize();
-    }
-  });
+  ipcMain.on('window-max', () => win.isMaximized() ? win.restore() : win.maximize());
   ipcMain.on('window-close', () => win.close());
+
+  return win;
 }
 
 app.whenReady().then(() => {
-  createWindow();
+  const win = createMainWindow();
+  win.once('ready-to-show', () => win.show());
+
   app.on('activate', () => {
-    if (BrowserWindow.getAllWindows().length === 0) createWindow();
+    if (BrowserWindow.getAllWindows().length === 0) createMainWindow();
   });
 });
 
@@ -60,41 +56,135 @@ app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') app.quit();
 });
 
+// ── Helpers de serialización ──────────────────────────────
+function sanitizarTarea(task) {
+  return {
+    // Campos originales (compatibilidad total con la UI existente)
+    id:           String(task.id || Date.now()),
+    name:         String(task.name || ''),
+    note:         String(task.note || ''),
+    priority:     String(task.priority || 'necesaria'),
+    date:         String(task.date || ''),
+    time:         String(task.time || ''),
+    status:       String(task.status || 'todo'),
+    created:      String(task.created || new Date().toISOString()),
+    lastReviewed: String(task.lastReviewed || new Date().toISOString()),
+    completedAt:  task.completedAt ? String(task.completedAt) : null,
+    counter:      typeof task.counter === 'number' ? task.counter : 0,
+
+    // Campos del dominio Saiki (preservados tal cual si existen)
+    prioridad_saiki:       task.prioridad_saiki       || null,
+    dimensiones:           task.dimensiones            || null,
+    duracion_estimada_min: typeof task.duracion_estimada_min === 'number'
+                             ? task.duracion_estimada_min : null,
+    ventana_inicio:        task.ventana_inicio         || null,
+    ventana_fin:           task.ventana_fin            || null,
+    justificacion:         task.justificacion          || null,
+    F_expost:              typeof task.F_expost === 'number' ? task.F_expost : null,
+    estado_saiki:          task.estado_saiki           || null,
+    reclasificaciones:     Array.isArray(task.reclasificaciones)
+                             ? task.reclasificaciones : [],
+  };
+}
+
+// Reconstitye una Tarea del dominio desde los datos JSON (convierte strings → Date)
+function jsonATarea(t) {
+  if (!t.dimensiones || !t.ventana_inicio || !t.ventana_fin) {
+    throw new Error(`Tarea "${t.name}" no tiene campos de dominio completos (dimensiones, ventana_inicio, ventana_fin).`);
+  }
+  return {
+    id:                    String(t.id),
+    nombre:                String(t.name),
+    nota:                  t.note || undefined,
+    prioridad:             t.prioridad_saiki || 'P2',
+    duracion_estimada_min: typeof t.duracion_estimada_min === 'number' ? t.duracion_estimada_min : 60,
+    ventana_inicio:        new Date(t.ventana_inicio),
+    ventana_fin:           new Date(t.ventana_fin),
+    dimensiones:           t.dimensiones,
+    justificacion:         t.justificacion || undefined,
+    F_expost:              typeof t.F_expost === 'number' ? t.F_expost : undefined,
+    estado:                t.estado_saiki || 'POR_HACER',
+    reclasificaciones:     (t.reclasificaciones || []).map(r => ({
+      ...r,
+      momento: new Date(r.momento),
+    })),
+    creado_en:             new Date(t.created),
+  };
+}
+
+// Mezcla los campos del dominio de vuelta al formato JSON de almacenamiento
+function dominioATareaJson(tareaOriginalJson, tareadominio) {
+  return {
+    ...tareaOriginalJson,
+    estado_saiki:      tareadominio.estado,
+    reclasificaciones: tareadominio.reclasificaciones.map(r => ({
+      ...r,
+      momento: r.momento.toISOString(),
+    })),
+    dimensiones:           tareadominio.dimensiones,
+    ventana_inicio:        tareadominio.ventana_inicio.toISOString(),
+    ventana_fin:           tareadominio.ventana_fin.toISOString(),
+    duracion_estimada_min: tareadominio.duracion_estimada_min,
+    prioridad_saiki:       tareadominio.prioridad,
+    justificacion:         tareadominio.justificacion || null,
+    F_expost:              tareadominio.F_expost ?? null,
+  };
+}
+
 // ── IPC: leer tareas desde disco ──────────────────────────
 ipcMain.handle('load-tasks', () => {
   try {
     if (!fs.existsSync(DATA_FILE)) {
-      // 🔹 Devuelve un array vacío si el archivo no existe
-      return [];
+      return { tasks: [], dayNotes: {}, cupo_semanal: null, config_dia: null };
     }
     const raw = fs.readFileSync(DATA_FILE, 'utf-8');
-    const tasks = JSON.parse(raw);
+    const data = JSON.parse(raw);
 
-    // 🔹 VALIDACIÓN: Asegúrate de que tasks sea un array
-    if (!Array.isArray(tasks)) {
-      console.error('Datos corruptos: no es un array. Reseteando...');
-      return [];
+    // Migración: formato antiguo (array plano)
+    if (Array.isArray(data)) {
+      return { tasks: data.map(sanitizarTarea), dayNotes: {}, cupo_semanal: null, config_dia: null };
     }
 
-    // 🔹 VALIDACIÓN: Sanitiza cada tarea (por si acaso)
-    return tasks.map(task => {
-      // 🔹 Asegúrate de que cada tarea tenga los campos básicos
-      return {
-        id: String(task.id || Date.now()),
-        name: String(task.name || ''),
-        note: String(task.note || ''),
-        priority: String(task.priority || 'necesaria'),
-        date: String(task.date || ''),
-        status: String(task.status || 'todo'),
-        created: String(task.created || new Date().toISOString()),
-        lastReviewed: String(task.lastReviewed || new Date().toISOString()),
-        completedAt: task.completedAt ? String(task.completedAt) : null,
-        counter: typeof task.counter === 'number' ? task.counter : 0
-      };
-    });
+    return {
+      tasks:        (data.tasks || []).map(sanitizarTarea),
+      dayNotes:     (data.dayNotes && typeof data.dayNotes === 'object') ? data.dayNotes : {},
+      cupo_semanal: data.cupo_semanal || null,
+      config_dia:   data.config_dia   || null,
+    };
   } catch (e) {
     console.error('Error leyendo tareas:', e);
-    return []; // 🔹 Devuelve array vacío en caso de error
+    return { tasks: [], dayNotes: {}, cupo_semanal: null, config_dia: null };
+  }
+});
+
+// ── IPC: guardar tareas en disco ──────────────────────────
+ipcMain.handle('save-tasks', (_event, payload) => {
+  try {
+    let tasks, dayNotes, cupo_semanal, config_dia;
+
+    if (Array.isArray(payload)) {
+      tasks = payload; dayNotes = {}; cupo_semanal = null; config_dia = null;
+    } else if (payload && typeof payload === 'object') {
+      tasks        = payload.tasks        || [];
+      dayNotes     = payload.dayNotes     || {};
+      cupo_semanal = payload.cupo_semanal || null;
+      config_dia   = payload.config_dia   || null;
+    } else {
+      throw new Error('Datos inválidos');
+    }
+
+    if (!Array.isArray(tasks)) throw new Error('tasks no es un array');
+    if (tasks.length > 1000)   throw new Error('Límite de 1000 tareas excedido');
+
+    fs.writeFileSync(
+      DATA_FILE,
+      JSON.stringify({ tasks: tasks.map(sanitizarTarea), dayNotes, cupo_semanal, config_dia }, null, 2),
+      'utf-8'
+    );
+    return true;
+  } catch (e) {
+    console.error('Error guardando tareas:', e);
+    return false;
   }
 });
 
@@ -125,44 +215,111 @@ ipcMain.handle('import-tasks', async (event) => {
     });
     if (canceled || filePaths.length === 0) return { success: false };
     const raw = fs.readFileSync(filePaths[0], 'utf-8');
-    const tasks = JSON.parse(raw);
-    if (!Array.isArray(tasks)) throw new Error('El archivo no contiene un array de tareas');
-    return { success: true, tasks };
+    const data = JSON.parse(raw);
+    if (Array.isArray(data)) {
+      return { success: true, tasks: data };
+    } else if (data && typeof data === 'object' && Array.isArray(data.tasks)) {
+      return { success: true, tasks: data };
+    } else {
+      throw new Error('El archivo no contiene tareas válidas');
+    }
   } catch (e) {
     console.error('Error importando tareas:', e);
     return { success: false, error: e.message };
   }
 });
 
-// ── IPC: guardar tareas en disco ──────────────────────────
-ipcMain.handle('save-tasks', (_event, tasks) => {
+// ── IPC: dominio — evaluar día ────────────────────────────
+ipcMain.handle('dominio:evaluar-dia', (_event, { tareas_json, config }) => {
+  if (!dominio) return { error: 'Motor de dominio no disponible' };
   try {
-    // 🔹 VALIDACIÓN: Asegúrate de que tasks sea un array
-    if (!Array.isArray(tasks)) {
-      throw new Error('Datos inválidos: no es un array');
-    }
-
-    // 🔹 VALIDACIÓN: Sanitiza cada tarea antes de guardar
-    const sanitizedTasks = tasks.map(task => {
-      return {
-        id: String(task.id || Date.now()),
-        name: String(task.name || ''),
-        note: String(task.note || ''),
-        priority: String(task.priority || 'necesaria'),
-        date: String(task.date || ''),
-        status: String(task.status || 'todo'),
-        created: String(task.created || new Date().toISOString()),
-        lastReviewed: String(task.lastReviewed || new Date().toISOString()),
-        completedAt: task.completedAt ? String(task.completedAt) : null,
-        counter: typeof task.counter === 'number' ? task.counter : 0
-      };
-    });
-
-    // 🔹 Escribe el archivo con permisos seguros
-    fs.writeFileSync(DATA_FILE, JSON.stringify(sanitizedTasks, null, 2), 'utf-8');
-    return true;
+    const tareas = tareas_json
+      .filter(t => t.dimensiones && t.ventana_inicio && t.ventana_fin)
+      .map(jsonATarea);
+    return dominio.evaluarDia(tareas, config);
   } catch (e) {
-    console.error('Error guardando tareas:', e);
-    return false;
+    return { error: e.message };
+  }
+});
+
+// ── IPC: dominio — admitir tarea ─────────────────────────
+ipcMain.handle('dominio:admitir-tarea', (_event, tarea_json) => {
+  if (!dominio) return { error: 'Motor de dominio no disponible' };
+  try {
+    const tarea = jsonATarea(tarea_json);
+    return dominio.admitirTarea(tarea);
+  } catch (e) {
+    return { error: e.message };
+  }
+});
+
+// ── IPC: dominio — calcular carga de una tarea ───────────
+ipcMain.handle('dominio:calcular-carga', (_event, tarea_json) => {
+  if (!dominio) return { error: 'Motor de dominio no disponible' };
+  try {
+    const tarea = jsonATarea(tarea_json);
+    return dominio.derivarICCtarea(tarea);
+  } catch (e) {
+    return { error: e.message };
+  }
+});
+
+// ── IPC: dominio — transicionar estado ───────────────────
+ipcMain.handle('dominio:transicionar-estado', (_event, { tarea_json, entrada_json, cupo }) => {
+  if (!dominio) return { ok: false, error: 'Motor de dominio no disponible' };
+  try {
+    const tarea = jsonATarea(tarea_json);
+    // Reconstituir fechas en la entrada
+    const entrada = { ...entrada_json, ahora: new Date(entrada_json.ahora) };
+    if (entrada.nueva_ventana_inicio) entrada.nueva_ventana_inicio = new Date(entrada.nueva_ventana_inicio);
+    if (entrada.nueva_ventana_fin)    entrada.nueva_ventana_fin    = new Date(entrada.nueva_ventana_fin);
+
+    const resultado = dominio.transicionarEstado(tarea, entrada, cupo);
+    return {
+      ok:    true,
+      tarea: dominioATareaJson(tarea_json, resultado.tarea),
+      cupo:  resultado.cupo,
+    };
+  } catch (e) {
+    return { ok: false, error: e.message };
+  }
+});
+
+// ── IPC: dominio — calcular puntaje mensual ───────────────
+ipcMain.handle('dominio:calcular-puntaje', (_event, datos_mes) => {
+  if (!dominio) return { error: 'Motor de dominio no disponible' };
+  try {
+    return dominio.calcularPuntaje(datos_mes);
+  } catch (e) {
+    return { error: e.message };
+  }
+});
+
+// ── IPC: dominio — advertencia beta ──────────────────────
+ipcMain.handle('dominio:advertencia-beta', (_event, { cc_planificada, beta, PB }) => {
+  if (!dominio) return { error: 'Motor de dominio no disponible' };
+  try {
+    return dominio.advertenciaBeta(cc_planificada, beta, PB);
+  } catch (e) {
+    return { error: e.message };
+  }
+});
+
+// ── IPC: dominio — reset resiliente ──────────────────────
+ipcMain.handle('dominio:reset-resiliente', (_event, { ciclo_actual, historico }) => {
+  if (!dominio) return { error: 'Motor de dominio no disponible' };
+  try {
+    const ahora = new Date();
+    // Reconstituir fechas del ciclo
+    const ciclo = {
+      ...ciclo_actual,
+      inicio: new Date(ciclo_actual.inicio),
+      tareas: (ciclo_actual.tareas || []).map(t => {
+        try { return jsonATarea(t); } catch { return null; }
+      }).filter(Boolean),
+    };
+    return dominio.resetResiliente(ciclo, historico || [], ahora);
+  } catch (e) {
+    return { error: e.message };
   }
 });

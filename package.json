@@ -1,17 +1,23 @@
 {
-  "name": "planificador-mensual",
+  "name": "saiki",
   "version": "1.0.0",
-  "description": "Planificador mensual de tareas - Tablero Kanban y calendario",
+  "description": "再起 Saiki - Planificador de carga cognitiva y resiliencia personal",
   "main": "main.js",
-  "author": "Saiki",
+  "author": {
+    "name": "Rodrigo Pino",
+    "email": "rodpino71@gmail.com"
+  },
+  "homepage": "https://github.com/saiki/planificador",
   "license": "MIT",
   "scripts": {
     "start": "electron .",
-    "dist": "electron-builder"
+    "build:dominio": "esbuild src/dominio/index.ts --bundle --platform=node --target=node18 --format=cjs --outfile=dist/dominio/index.js",
+    "dist": "electron-builder",
+    "test": "vitest run"
   },
   "build": {
-    "appId": "com.saiki.planificador-mensual",
-    "productName": "Planificador Mensual",
+    "appId": "com.saiki.app",
+    "productName": "Saiki",
     "directories": {
       "buildResources": "build",
       "output": "release"
@@ -19,15 +25,26 @@
     "files": [
       "main.js",
       "preload.js",
+      "preload-splash.js",
       "index.html",
-      "package.json"
+      "splash.html",
+      "package.json",
+      "dist/**",
+      "build/intro.mp4"
     ],
     "linux": {
       "target": [
+        "deb",
         "AppImage"
       ],
       "icon": "build/icon.png",
-      "category": "Office"
+      "category": "Office",
+      "synopsis": "再起 Saiki - Volver a empezar",
+      "description": "Planificador de carga cognitiva y resiliencia personal"
+    },
+    "deb": {
+      "depends": ["libnotify4", "libxtst6", "libnss3"],
+      "maintainer": "Rodrigo Pino <rodpino71@gmail.com>"
     },
     "mac": {
       "target": [
@@ -43,7 +60,12 @@
     }
   },
   "devDependencies": {
+    "@types/node": "^26.1.1",
     "electron": "^28.3.3",
-    "electron-builder": "^24.13.3"
+    "electron-builder": "^24.13.3",
+    "esbuild": "^0.28.1",
+    "playwright-core": "^1.61.1",
+    "typescript": "^7.0.2",
+    "vitest": "^4.1.10"
   }
 }

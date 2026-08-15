@@ -6,7 +6,7 @@ Sub-proyecto: 1 de 3 (backend de licencias). Los otros dos —landing page/check
 
 ## Contexto y objetivo
 
-Saiki es una app de escritorio Electron (ver `package.json`, `main.js`) que hoy se distribuye sin ningún control de licencia. El objetivo es cobrar un monto simbólico por Saiki (destinado a la Teletón Chile) a través de Lemon Squeezy, y evitar que la app se use sin haber pagado ese monto — sin que esto le cueste dinero al autor (debe correr en infraestructura gratuita) ni implique un servidor propio que mantener.
+Saiki es una app de escritorio Electron (ver `package.json`, `main.js`) que hoy se distribuye sin ningún control de licencia. El objetivo es cobrar un monto simbólico por Saiki a través de Lemon Squeezy, como venta normal de producto, y evitar que la app se use sin haber pagado ese monto — sin que esto le cueste dinero al autor (debe correr en infraestructura gratuita) ni implique un servidor propio que mantener.
 
 Flujo de negocio completo (para contexto; solo el paso 7-8 se diseña en este documento):
 1. El usuario entra a la landing de Saiki en Netlify.
@@ -40,10 +40,9 @@ Comprador          Netlify (estático)      Netlify Functions        Lemon Squee
 ```
 
 Principios:
-- El API secret de Lemon Squeezy vive **solo** como variable de entorno en Netlify (`LEMONSQUEEZY_API_KEY`), nunca se distribuye dentro de la app.
-- La app Electron nunca llama directo a Lemon Squeezy — siempre pasa por el backend propio.
-- El backend nunca llama directo a Lemon Squeezy sin pasar por su API oficial de licencias (`api.lemonsqueezy.com/v1/licenses/*`).
-- El token de activación que la app guarda localmente está firmado con una clave privada Ed25519 que solo existe en el backend (`ACTIVATION_SIGNING_PRIVATE_KEY`); la app solo tiene la clave pública correspondiente, embebida como constante, para **verificar** (no puede firmar). Esto evita que alguien edite a mano el archivo local de activación para falsificar un "activado: true" — sin la clave privada no puede producir una firma válida.
+- Los endpoints `/v1/licenses/activate` y `/v1/licenses/validate` de Lemon Squeezy son públicos y no requieren una API key secreta (solo la `license_key` misma como credencial) — por lo tanto el backend **no existe para esconder un secreto**, sino por la siguiente razón.
+- La app Electron nunca llama directo a Lemon Squeezy — siempre pasa por el backend propio, porque el backend es quien **firma criptográficamente** el resultado de la validación. Sin esa firma, la app tendría que confiar en texto plano en la respuesta ("activated: true") para decidir si habilitarse offline, y ese texto se puede falsificar tan fácilmente como editar un archivo JSON local.
+- El token de activación que la app guarda localmente está firmado con una clave privada Ed25519 que solo existe en el backend (`ACTIVATION_SIGNING_PRIVATE_KEY`); la app solo tiene la clave pública correspondiente, embebida como constante, para **verificar** (no puede firmar). Sin la clave privada no se puede producir una firma válida, así que editar el archivo local de activación a mano no sirve para falsificar un "activado: true".
 
 ## Componentes
 
@@ -105,9 +104,13 @@ Aunque la implementación de la UI de activación es un sub-proyecto separado, e
 
 ## Configuración necesaria
 
+**En Netlify** (antes de lo demás, porque la URL queda embebida en la app):
+1. Elegir el nombre del sitio en Site settings → Site details → "Change site name" (ej. `saiki` → `https://saiki.netlify.app`). Esto es gratis y no requiere comprar un dominio propio; la URL queda fija desde ese momento. Un dominio custom se puede agregar después sin romper esta URL.
+2. Esa URL base (`https://saiki.netlify.app`) es la que queda grabada en la app Electron como destino de `/api/activate` y `/api/validate` (vía redirects de `netlify.toml` hacia `/.netlify/functions/...`, para tener rutas limpias).
+
 **En Lemon Squeezy** (cuenta nueva, nada configurado aún):
 1. Crear cuenta y una Store.
-2. Crear un Product "Saiki" con el precio simbólico definido (destino: Teletón Chile).
+2. Crear un Product "Saiki" con el precio simbólico definido.
 3. Activar License Keys para ese producto con `activation_limit: 1`.
 4. Obtener el API key secreto (Settings → API).
 5. Configurar el correo de confirmación de compra para incluir la `license_key` y el link de descarga del instalador de Saiki.
