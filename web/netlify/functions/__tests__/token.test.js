@@ -40,4 +40,24 @@ describe('signToken / verifyToken', () => {
     expect(verifyToken('not-a-valid-token', publicKeyPem)).toBeNull();
     expect(verifyToken('', publicKeyPem)).toBeNull();
   });
+
+  it('signs with a private key whose line breaks were flattened to spaces (e.g. pasted into a single-line env var field)', () => {
+    const flattenedPrivateKey = privateKeyPem.trim().replace(/\n/g, ' ');
+    const payload = { a: 1 };
+    const token = signToken(payload, flattenedPrivateKey);
+    expect(verifyToken(token, publicKeyPem)).toEqual(payload);
+  });
+
+  it('verifies with a public key whose line breaks were flattened to spaces', () => {
+    const flattenedPublicKey = publicKeyPem.trim().replace(/\n/g, ' ');
+    const token = signToken({ a: 1 }, privateKeyPem);
+    expect(verifyToken(token, flattenedPublicKey)).toEqual({ a: 1 });
+  });
+
+  it('signs with a private key whose line breaks were stored as literal \\n sequences', () => {
+    const escapedPrivateKey = privateKeyPem.trim().replace(/\n/g, '\\n');
+    const payload = { a: 1 };
+    const token = signToken(payload, escapedPrivateKey);
+    expect(verifyToken(token, publicKeyPem)).toEqual(payload);
+  });
 });
