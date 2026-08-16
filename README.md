@@ -8,7 +8,7 @@ Planificador de carga cognitiva y resiliencia personal. Aplicación de escritori
 
 ## Licencia
 
-Software comercial. El código fuente es visible por transparencia, pero **todos los derechos están reservados** — ver [LICENSE](./LICENSE). Uso de la aplicación compilada requiere una licencia paga, disponible en [saiki-resilience.netlify.app](https://saiki-resilience.netlify.app).
+Software gratuito, de uso personal únicamente. El código fuente es visible por transparencia, pero **todos los derechos están reservados** — ver [LICENSE](./LICENSE). No está permitido modificarlo, comercializarlo, revenderlo ni redistribuirlo.
 
 ## Estructura del repositorio
 
@@ -16,7 +16,7 @@ Software comercial. El código fuente es visible por transparencia, pero **todos
 - `src/dominio/` — motor de cálculo (carga cognitiva, planificación, puntaje).
 - `src/capa_humana/` — contenido y arquetipos.
 - `src/licencia/` — verificación de token de activación (Ed25519).
-- `web/` — landing page y backend de licencias (Netlify Functions), integrado con Lemon Squeezy.
+- `web/` — landing page y manual de usuario (Netlify).
 
 ## Desarrollo
 

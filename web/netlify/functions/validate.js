@@ -1,6 +1,3 @@
-const { validateLicense } = require('./lib/lemonsqueezy.js');
-const { signToken } = require('./lib/token.js');
-
 function badRequest() {
   return { statusCode: 400, body: JSON.stringify({ ok: false, reason: 'bad_request' }) };
 }
@@ -18,20 +15,5 @@ exports.handler = async (event) => {
     return badRequest();
   }
 
-  const result = await validateLicense(licenseKey, instanceId);
-  if (!result.ok) {
-    return { statusCode: 200, body: JSON.stringify({ ok: false, reason: result.reason }) };
-  }
-
-  const token = signToken(
-    {
-      license_key: licenseKey,
-      instance_id: instanceId,
-      device_id: deviceId,
-      issued_at: Date.now(),
-    },
-    process.env.ACTIVATION_SIGNING_PRIVATE_KEY
-  );
-
-  return { statusCode: 200, body: JSON.stringify({ ok: true, token }) };
+  return { statusCode: 200, body: JSON.stringify({ ok: false, reason: 'service_unavailable' }) };
 };
