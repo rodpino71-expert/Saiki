@@ -5,7 +5,6 @@ export default defineConfig({
     include: [
       'src/dominio/__tests__/**/*.test.ts',
       'web/netlify/functions/__tests__/**/*.test.js',
-      'src/licencia/__tests__/**/*.test.js',
     ],
   },
 });

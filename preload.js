@@ -64,9 +64,3 @@ contextBridge.exposeInMainWorld('saikiDominio', {
   resetResiliente: (ciclo_actual, historico) =>
     ipcRenderer.invoke('dominio:reset-resiliente', { ciclo_actual, historico }),
 });
-
-// ── Licencia: activación ────────────────────────────────────
-contextBridge.exposeInMainWorld('licenseAPI', {
-  checkActivation: () => ipcRenderer.invoke('license:check-activation'),
-  activate: (licenseKey) => ipcRenderer.invoke('license:activate', licenseKey),
-});

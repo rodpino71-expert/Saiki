@@ -1,6 +1,6 @@
 {
   "name": "saiki",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "再起 Saiki - Planificador de carga cognitiva y resiliencia personal",
   "main": "main.js",
   "author": {
@@ -31,7 +31,6 @@
       "main.js",
       "preload.js",
       "index.html",
-      "src/licencia/*.js",
       "package.json",
       "dist/**"
     ],
