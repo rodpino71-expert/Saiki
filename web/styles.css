@@ -1,24 +1,24 @@
-/* Sistema visual tomado del white paper "El peso, no la cantidad"
-   (Saiki_WhitePaper_LinkedIn.ok.pdf): tapas oscuras + páginas color
-   crema, tipografía serif, acento burdeos, líneas finas, etiquetas
-   pequeñas en mayúsculas, kanji 再起 como marca de agua. Los colores
-   de cada estado de resiliencia en el Bento vienen del código real
-   de la app (index.html), no de este documento. */
+/* Sistema visual del white paper "El peso, no la cantidad"
+   (Saiki_WhitePaper_LinkedIn.pdf): tapas oscuras + páginas color crema,
+   tipografía serif, acento burdeos, líneas finas, etiquetas pequeñas en
+   mayúsculas, kanji 再起 como marca de agua. Paleta extraída del PDF. */
 :root {
-  --paper: #f3eee4;
-  --paper-surface: #ffffff;
-  --ink: #2b2420;
-  --ink-muted: #8b8370;
-  --line: #ddd6c8;
+  --paper: #f4efe6;
+  --paper-surface: #fbf7ef;
+  --ink: #26201c;
+  --ink-muted: #8a8177;
+  --line: #d8cebc;
+  --line-strong: #5c544c;
 
-  --dark: #1d1a24;
-  --dark-surface: #262230;
-  --dark-text: #f3eee4;
-  --dark-muted: #b8afc4;
-  --dark-line: rgba(255, 255, 255, 0.14);
+  --dark: #211c26;
+  --dark-surface: #2a2430;
+  --dark-text: #f4efe6;
+  --dark-muted: #c3bbce;
+  --dark-line: rgba(244, 239, 230, 0.14);
 
-  --accent: #a3495c;
-  --accent-dark: #833a4a;
+  --accent: #8e4a54;
+  --accent-dark: #6e3a42;
+  --accent-soft: #c99aa0;
 
   --optimismo-bg: #fff8f3;
   --optimismo-text: #4a2040;
@@ -41,9 +41,9 @@
   --neutralidad-primary: #3b82f6;
 
   --radius: 10px;
-  --radius-sm: 6px;
-  --shadow: 0 1px 2px rgba(30, 20, 15, 0.05), 0 8px 24px rgba(30, 20, 15, 0.06);
-  --shadow-hover: 0 4px 8px rgba(30, 20, 15, 0.07), 0 16px 32px rgba(30, 20, 15, 0.10);
+  --radius-sm: 4px;
+  --shadow: 0 1px 2px rgba(30, 20, 15, 0.04), 0 8px 24px rgba(30, 20, 15, 0.05);
+  --shadow-hover: 0 4px 8px rgba(30, 20, 15, 0.06), 0 16px 32px rgba(30, 20, 15, 0.09);
 
   --serif: Georgia, 'Iowan Old Style', 'Palatino Linotype', 'Book Antiqua', serif;
   --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -56,85 +56,121 @@ body {
   font-family: var(--serif);
   background: var(--paper);
   color: var(--ink);
-  line-height: 1.6;
+  line-height: 1.7;
   -webkit-font-smoothing: antialiased;
 }
 
-h1, h2, h3 { line-height: 1.25; font-weight: 700; }
+h1, h2, h3 {
+  font-family: var(--serif);
+  line-height: 1.22;
+  font-weight: 700;
+  color: var(--ink);
+}
 
 .eyebrow {
   font-family: var(--sans);
   font-size: 12px;
   font-weight: 600;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--accent);
   margin: 0 0 14px;
 }
 
-/* ---------- Hero (tapa oscura) ---------- */
+a { color: var(--accent); }
+
+/* ---------- Hero (tapa oscura, como portada del white paper) ---------- */
 
 .hero {
   position: relative;
   overflow: hidden;
   text-align: center;
-  padding: 76px 20px 68px;
+  padding: 72px 20px 64px;
   background: var(--dark);
   color: var(--dark-text);
 }
 
 .hero-kanji {
   position: absolute;
-  top: -40px;
-  right: -20px;
-  font-size: 320px;
+  top: -46px;
+  right: -22px;
+  font-size: 340px;
   font-weight: 700;
-  color: rgba(255, 255, 255, 0.035);
+  color: rgba(244, 239, 230, 0.045);
   line-height: 1;
   pointer-events: none;
   user-select: none;
 }
 
-.hero .eyebrow { color: var(--dark-muted); }
+.cover-meta {
+  position: relative;
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--dark-muted);
+  margin: 0 0 26px;
+}
+
+.hero .eyebrow { color: var(--accent-soft); }
 
 .logo {
   position: relative;
   width: 84px;
   height: 84px;
-  margin-bottom: 20px;
+  margin-bottom: 22px;
 }
 
 .hero h1 {
   position: relative;
-  font-size: clamp(30px, 4.2vw, 44px);
-  margin: 0 auto 18px;
-  max-width: 760px;
+  font-size: clamp(34px, 5vw, 52px);
+  margin: 0 auto 16px;
+  max-width: 720px;
   color: var(--dark-text);
+  letter-spacing: -0.01em;
+}
+
+.hero h1 span {
+  font-style: italic;
+  font-weight: 400;
+  color: var(--accent-soft);
 }
 
 .subtitle {
   position: relative;
   font-size: 18px;
+  line-height: 1.65;
   color: var(--dark-muted);
   max-width: 560px;
-  margin: 0 auto 32px;
+  margin: 0 auto 0;
+}
+
+.hero-rule {
+  position: relative;
+  width: 64px;
+  height: 2px;
+  background: var(--accent);
+  margin: 30px auto;
 }
 
 .cta-button {
   position: relative;
   display: inline-block;
   background: var(--accent);
-  color: #fff;
+  color: var(--dark-text);
   text-decoration: none;
   font-family: var(--sans);
   font-weight: 600;
-  font-size: 16px;
-  padding: 15px 30px;
+  font-size: 15px;
+  letter-spacing: 0.04em;
+  padding: 15px 32px;
   border-radius: var(--radius-sm);
-  transition: background 0.15s ease, transform 0.15s ease;
+  border: 1px solid var(--accent);
+  transition: background 0.15s ease, transform 0.15s ease, border-color 0.15s ease;
 }
 
-.cta-button:hover { background: var(--accent-dark); transform: translateY(-1px); }
+.cta-button:hover { background: var(--accent-dark); border-color: var(--accent-dark); transform: translateY(-1px); }
 
 .cta-note {
   position: relative;
@@ -144,23 +180,25 @@ h1, h2, h3 { line-height: 1.25; font-weight: 700; }
   margin-top: 14px;
 }
 
+.cta-note a { color: var(--dark-text); }
+
 /* ---------- Layout base ---------- */
 
 main { max-width: 1000px; margin: 0 auto; padding: 0 20px; }
 
-section { padding: 64px 0; border-top: 1px solid var(--line); }
+section { padding: 72px 0; border-top: 1px solid var(--line); }
 
 .problem { text-align: center; max-width: 680px; margin: 0 auto; }
 .problem .eyebrow { text-align: left; }
-.problem h2 { font-size: 27px; }
-.problem p { color: var(--ink-muted); font-size: 17px; font-style: italic; }
+.problem h2 { font-size: 28px; margin-bottom: 16px; }
+.problem p { color: var(--ink-muted); font-size: 17px; }
 
-.bento h2, .screenshots h2, .pricing h2, .faq h2 {
-  font-size: 27px;
+.bento h2, .screenshots h2, .faq h2 {
+  font-size: 28px;
   margin: 0 0 12px;
 }
 
-.bento .eyebrow, .screenshots .eyebrow, .pricing .eyebrow, .faq .eyebrow { text-align: left; }
+.bento .eyebrow, .screenshots .eyebrow, .faq .eyebrow { text-align: left; }
 
 .section-intro {
   max-width: 620px;
@@ -168,6 +206,37 @@ section { padding: 64px 0; border-top: 1px solid var(--line); }
   color: var(--ink-muted);
   font-size: 16px;
   font-style: italic;
+}
+
+/* ---------- Pull quote (cita destacada, como en el white paper) ---------- */
+
+.pullquote {
+  margin: 0;
+  padding: 40px 24px 40px 34px;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  border-left: 3px solid var(--accent);
+  max-width: 680px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.pullquote blockquote {
+  margin: 0;
+  font-size: 22px;
+  font-style: italic;
+  line-height: 1.5;
+  color: var(--ink);
+}
+
+.pullquote figcaption {
+  margin-top: 14px;
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent);
 }
 
 /* ---------- Bento grid ---------- */
@@ -199,7 +268,7 @@ section { padding: 64px 0; border-top: 1px solid var(--line); }
 
 .bento-icon { font-size: 26px; margin-bottom: 14px; }
 .bento-tile h3 { font-family: var(--sans); margin: 0 0 8px; font-size: 16px; }
-.bento-tile p { margin: 0; color: var(--ink-muted); font-size: 14px; line-height: 1.5; font-family: var(--sans); }
+.bento-tile p { margin: 0; color: var(--ink-muted); font-size: 14px; line-height: 1.55; font-family: var(--sans); }
 
 .bento-optimismo { background: var(--optimismo-bg); border-color: transparent; }
 .bento-optimismo h3 { color: var(--optimismo-primary); }
@@ -224,56 +293,6 @@ section { padding: 64px 0; border-top: 1px solid var(--line); }
 @media (max-width: 640px) {
   .bento-grid { grid-template-columns: repeat(2, 1fr); }
   .bento-lg, .bento-wide { grid-column: span 2; }
-}
-
-/* ---------- Descargas ---------- */
-
-.downloads { text-align: center; }
-.downloads .eyebrow { text-align: center; }
-.downloads h2 { font-size: 27px; margin: 0 0 12px; }
-
-.download-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
-  gap: 14px;
-  max-width: 860px;
-  margin: 28px auto 0;
-}
-
-.download-btn {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 6px;
-  padding: 20px 14px;
-  background: var(--paper-surface);
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  color: var(--ink);
-  text-decoration: none;
-  font-family: var(--sans);
-  box-shadow: var(--shadow);
-  transition: box-shadow 0.2s ease, transform 0.2s ease;
-}
-
-.download-btn:hover { box-shadow: var(--shadow-hover); transform: translateY(-2px); }
-
-.download-btn svg { width: 34px; height: 34px; }
-
-.dl-name { font-weight: 600; font-size: 15px; }
-
-.dl-file {
-  color: var(--ink-muted);
-  font-size: 12px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-.download-note {
-  margin-top: 16px;
-  color: var(--ink-muted);
-  font-family: var(--sans);
-  font-size: 13px;
 }
 
 /* ---------- Screenshots ---------- */
@@ -321,15 +340,58 @@ section { padding: 64px 0; border-top: 1px solid var(--line); }
   height: auto;
 }
 
-/* ---------- Pricing ---------- */
+/* ---------- Descargas ---------- */
 
-.pricing { text-align: center; }
-.pricing .eyebrow { text-align: center; }
-.price {
-  font-size: 52px;
-  font-weight: 700;
+.downloads { text-align: center; }
+.downloads .eyebrow { text-align: center; }
+.downloads h2 { font-size: 28px; margin: 0 0 12px; }
+
+.download-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 14px;
+  max-width: 860px;
+  margin: 28px auto 0;
+}
+
+.download-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 20px 14px;
+  background: var(--paper-surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
   color: var(--ink);
-  margin: 8px 0 4px;
+  text-decoration: none;
+  font-family: var(--sans);
+  box-shadow: var(--shadow);
+  transition: box-shadow 0.2s ease, transform 0.2s ease, border-color 0.2s ease;
+}
+
+.download-btn:hover {
+  box-shadow: var(--shadow-hover);
+  transform: translateY(-2px);
+  border-color: var(--accent);
+}
+
+.download-btn svg { width: 34px; height: 34px; color: var(--ink); }
+
+.dl-name { font-weight: 600; font-size: 15px; }
+
+.dl-file {
+  color: var(--ink-muted);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.download-note {
+  margin-top: 16px;
+  color: var(--ink-muted);
+  font-family: var(--sans);
+  font-size: 13px;
 }
 
 /* ---------- FAQ ---------- */
@@ -346,13 +408,13 @@ section { padding: 64px 0; border-top: 1px solid var(--line); }
   font-size: 13px;
 }
 
-/* ---------- Footer (cierre oscuro) ---------- */
+/* ---------- Footer (cierre oscuro, como contraportada) ---------- */
 
 footer {
   position: relative;
   overflow: hidden;
   text-align: center;
-  padding: 40px 20px 56px;
+  padding: 56px 20px 48px;
   background: var(--dark);
   color: var(--dark-muted);
   font-family: var(--sans);
@@ -364,13 +426,22 @@ footer {
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
-  font-size: 140px;
+  font-size: 160px;
   font-weight: 700;
-  color: rgba(255, 255, 255, 0.035);
+  color: rgba(244, 239, 230, 0.045);
   line-height: 1;
   pointer-events: none;
   user-select: none;
 }
 
-footer p { position: relative; margin: 0; }
-footer a { color: var(--dark-text); }
+.footer-quote {
+  position: relative;
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 20px;
+  color: var(--dark-text);
+  margin: 0 0 18px;
+}
+
+.footer-meta { position: relative; margin: 6px 0 0; }
+.footer-meta a { color: var(--dark-text); }
