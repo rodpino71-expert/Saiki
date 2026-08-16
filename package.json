@@ -1,11 +1,11 @@
 {
   "name": "saiki",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "再起 Saiki - Planificador de carga cognitiva y resiliencia personal",
   "main": "main.js",
   "author": {
-    "name": "Rodrigo Pino",
-    "email": "rodpino71@gmail.com"
+    "name": "Saiki",
+    "email": "saiki.planificador@gmail.com"
   },
   "homepage": "https://github.com/rodpino71-expert/Saiki",
   "repository": {
@@ -46,7 +46,7 @@
     },
     "deb": {
       "depends": ["libnotify4", "libxtst6", "libnss3"],
-      "maintainer": "Rodrigo Pino <rodpino71@gmail.com>"
+      "maintainer": "Saiki <saiki.planificador@gmail.com>"
     },
     "mac": {
       "target": [
