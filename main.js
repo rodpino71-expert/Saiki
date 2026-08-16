@@ -4,6 +4,16 @@ const fs = require('fs');
 
 const DATA_FILE = path.join(app.getPath('userData'), 'saiki-tareas.json');
 
+const crypto = require('node:crypto');
+const { verifyToken } = require('./src/licencia/token.js');
+const { necesitaRevalidar, dentroDePeriodoDeGracia } = require('./src/licencia/ventana.js');
+
+const ACTIVATION_FILE = path.join(app.getPath('userData'), 'activation.json');
+const LICENSE_API_BASE = 'https://saiki-resilience.netlify.app';
+const ACTIVATION_PUBLIC_KEY_PEM = `-----BEGIN PUBLIC KEY-----
+MCowBQYDK2VwAyEA9LgqQ4260n/MbZLTesKxz75O0TQcijn9jleVnuhITeM=
+-----END PUBLIC KEY-----`;
+
 // Motor de dominio compilado
 let dominio = null;
 try {
@@ -322,4 +332,121 @@ ipcMain.handle('dominio:reset-resiliente', (_event, { ciclo_actual, historico })
   } catch (e) {
     return { error: e.message };
   }
+});
+
+// ── Licencia: activación y validación ──────────────────────
+function leerActivacion() {
+  try {
+    const raw = fs.readFileSync(ACTIVATION_FILE, 'utf8');
+    const data = JSON.parse(raw);
+    if (!data || typeof data !== 'object' || !data.token || !data.device_id) return null;
+    return data;
+  } catch {
+    return null;
+  }
+}
+
+function guardarActivacion(data) {
+  fs.writeFileSync(ACTIVATION_FILE, JSON.stringify(data), 'utf8');
+}
+
+function borrarActivacion() {
+  try { fs.unlinkSync(ACTIVATION_FILE); } catch {}
+}
+
+function obtenerOCrearDeviceId() {
+  const actual = leerActivacion();
+  if (actual && actual.device_id) return actual.device_id;
+  return crypto.randomUUID();
+}
+
+async function llamarBackendLicencia(ruta, body) {
+  try {
+    const res = await fetch(`${LICENSE_API_BASE}${ruta}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+      signal: AbortSignal.timeout(10000),
+    });
+    const data = await res.json();
+    if (!data || typeof data !== 'object') {
+      return { ok: false, reason: 'service_unavailable' };
+    }
+    return data;
+  } catch {
+    return { ok: false, reason: 'service_unavailable' };
+  }
+}
+
+async function revalidarEnSegundoPlano(activacion) {
+  try {
+    const respuesta = await llamarBackendLicencia('/api/validate', {
+      license_key: activacion.license_key,
+      instance_id: activacion.instance_id,
+      device_id: activacion.device_id,
+    });
+    if (respuesta.ok && respuesta.token) {
+      const payload = verifyToken(respuesta.token, ACTIVATION_PUBLIC_KEY_PEM);
+      if (payload) {
+        guardarActivacion({ token: respuesta.token, ...payload });
+        return true;
+      }
+      return false;
+    } else if (!respuesta.ok && respuesta.reason === 'revoked') {
+      borrarActivacion();
+      return false;
+    }
+    return false;
+  } catch {
+    return false;
+  }
+}
+
+ipcMain.handle('license:check-activation', async () => {
+  const activacion = leerActivacion();
+  if (!activacion) return { activated: false };
+
+  const payload = verifyToken(activacion.token, ACTIVATION_PUBLIC_KEY_PEM);
+  if (!payload) return { activated: false };
+
+  const ahoraMs = Date.now();
+  if (!necesitaRevalidar(payload.issued_at, ahoraMs)) {
+    return { activated: true };
+  }
+
+  if (dentroDePeriodoDeGracia(payload.issued_at, ahoraMs)) {
+    revalidarEnSegundoPlano(activacion);
+    return { activated: true };
+  }
+
+  const revalidada = await revalidarEnSegundoPlano(activacion);
+  return { activated: revalidada };
+});
+
+ipcMain.handle('license:activate', async (_event, licenseKey) => {
+  if (!licenseKey || typeof licenseKey !== 'string') {
+    return { ok: false, reason: 'invalid_key' };
+  }
+
+  const deviceId = obtenerOCrearDeviceId();
+  const respuesta = await llamarBackendLicencia('/api/activate', {
+    license_key: licenseKey,
+    device_id: deviceId,
+  });
+
+  if (!respuesta.ok) {
+    return { ok: false, reason: respuesta.reason || 'service_unavailable' };
+  }
+
+  const payload = verifyToken(respuesta.token, ACTIVATION_PUBLIC_KEY_PEM);
+  if (!payload) {
+    return { ok: false, reason: 'service_unavailable' };
+  }
+
+  try {
+    guardarActivacion({ token: respuesta.token, ...payload });
+  } catch {
+    return { ok: false, reason: 'storage_error' };
+  }
+  return { ok: true };
 });

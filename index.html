@@ -347,11 +347,26 @@
   .btn-confirm-reprog { background: var(--primary); color: #fff; }
   .btn-cancel-reprog { background: var(--bg-main); color: var(--text-main); border: 1px solid var(--border); }
 
+  .activation-gate { display: none; position: fixed; inset: 0; z-index: 4000; background: var(--bg-main); flex-direction: column; align-items: center; justify-content: center; gap: 16px; text-align: center; padding: 24px; -webkit-app-region: drag; }
+  .activation-gate.show { display: flex; }
+  .activation-gate .activation-logo { font-size: 40px; }
+  .activation-gate input { font-size: 15px; padding: 10px 14px; border: 1px solid var(--border); border-radius: 6px; width: 280px; max-width: 80vw; text-align: center; -webkit-app-region: no-drag; }
+  .activation-gate button { font-size: 14px; padding: 10px 20px; border: none; border-radius: 6px; background: var(--primary); color: #fff; cursor: pointer; -webkit-app-region: no-drag; }
+  .activation-gate button:disabled { opacity: 0.6; cursor: default; }
+  .activation-gate .activation-error { color: #c5221f; font-size: 13px; min-height: 18px; }
+
 </style>
 </head>
 <body>
 
 <div id="loadingOverlay"><div class="spinner"></div></div>
+
+<div id="activationGate" class="activation-gate">
+  <span class="activation-logo" aria-hidden="true">再起</span>
+  <input id="activationKeyInput" type="text" placeholder="Coloca tu clave aquí" autocomplete="off" />
+  <button id="activationSubmitBtn">Activar</button>
+  <p id="activationError" class="activation-error"></p>
+</div>
 
 <div class="titlebar">
   <div class="menu-bar">
@@ -2412,9 +2427,69 @@ function confirmReprioritize() {
 }
 
 // ── Timer: check every 30 seconds ──
-setInterval(checkScheduledTaskAdvance, 30000);
+function iniciarApp() {
+  setInterval(checkScheduledTaskAdvance, 30000);
+  loadTasks();
+}
 
-loadTasks();
+async function verificarActivacionYArrancar() {
+  let resultado;
+  try {
+    resultado = await window.licenseAPI.checkActivation();
+  } catch {
+    resultado = { activated: false };
+  }
+  if (resultado && resultado.activated) {
+    iniciarApp();
+  } else {
+    document.getElementById('activationGate').classList.add('show');
+  }
+}
+
+const activationForm = {
+  input: document.getElementById('activationKeyInput'),
+  btn: document.getElementById('activationSubmitBtn'),
+  error: document.getElementById('activationError'),
+};
+
+async function intentarActivar() {
+  const licenseKey = activationForm.input.value.trim();
+  if (!licenseKey) return;
+  if (activationForm.btn.disabled) return;
+
+  activationForm.btn.disabled = true;
+  activationForm.btn.textContent = 'Activando...';
+  activationForm.error.textContent = '';
+
+  let respuesta;
+  try {
+    respuesta = await window.licenseAPI.activate(licenseKey);
+  } catch {
+    respuesta = { ok: false, reason: 'service_unavailable' };
+  }
+
+  if (respuesta && respuesta.ok) {
+    document.getElementById('activationGate').classList.remove('show');
+    iniciarApp();
+    return;
+  }
+
+  const mensajes = {
+    invalid_key: 'Esa clave no es válida. Revisa que esté bien copiada.',
+    already_activated: 'Esta clave ya está activada en otro equipo. Escríbenos a rodpino71@gmail.com si necesitas ayuda.',
+    service_unavailable: 'Sin conexión a internet. Verifica tu red e inténtalo de nuevo.',
+  };
+  activationForm.error.textContent = mensajes[respuesta && respuesta.reason] || 'Algo salió mal. Inténtalo de nuevo.';
+  activationForm.btn.disabled = false;
+  activationForm.btn.textContent = 'Activar';
+}
+
+activationForm.btn.addEventListener('click', intentarActivar);
+activationForm.input.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') intentarActivar();
+});
+
+verificarActivacionYArrancar();
 
 // ════════════════════════════════════════════════════════════
 // DOMINIO SAIKI — Capa humana: sensación, arquetipos, afinador
