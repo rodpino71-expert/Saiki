@@ -25,13 +25,10 @@
     "files": [
       "main.js",
       "preload.js",
-      "preload-splash.js",
       "index.html",
       "src/licencia/*.js",
-      "splash.html",
       "package.json",
-      "dist/**",
-      "build/intro.mp4"
+      "dist/**"
     ],
     "linux": {
       "target": [
