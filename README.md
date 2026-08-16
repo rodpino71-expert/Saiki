@@ -2,9 +2,13 @@
 
 Planificador de carga cognitiva y resiliencia personal. Aplicación de escritorio (Electron) para Linux, macOS y Windows.
 
+## Descarga
+
+Instaladores gratuitos (`.deb`, `.AppImage`, `.dmg`, `.exe`) en [GitHub Releases](../../releases/latest).
+
 ## Manual de usuario
 
-[Manual_de_Usuario_Saiki.md](./Manual_de_Usuario_Saiki.md) · [versión HTML autocontenida](./Manual_de_Usuario_Saiki.html)
+[web/manual.html](./web/manual.html)
 
 ## Licencia
 

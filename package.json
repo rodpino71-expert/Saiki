@@ -15,7 +15,8 @@
   "license": "UNLICENSED",
   "scripts": {
     "start": "electron .",
-    "build:dominio": "esbuild src/dominio/index.ts --bundle --platform=node --target=node18 --format=cjs --outfile=dist/dominio/index.js",
+    "build:dominio": "esbuild src/dominio/index.ts --bundle --platform=node --target=node18 --format=cjs --outfile=dist/dominio/index.js && npm run obfuscate:dominio",
+    "obfuscate:dominio": "javascript-obfuscator dist/dominio/index.js --output dist/dominio/index.js --compact true --control-flow-flattening true --control-flow-flattening-threshold 0.75 --dead-code-injection true --dead-code-injection-threshold 0.4 --identifier-names-generator hexadecimal --rename-globals false --self-defending true --string-array true --string-array-encoding base64 --string-array-threshold 0.75 --split-strings true --split-strings-chunk-length 8 --transform-object-keys true --unicode-escape-sequence false",
     "dist": "electron-builder",
     "test": "vitest run"
   },
@@ -45,7 +46,11 @@
       "description": "Planificador de carga cognitiva y resiliencia personal"
     },
     "deb": {
-      "depends": ["libnotify4", "libxtst6", "libnss3"],
+      "depends": [
+        "libnotify4",
+        "libxtst6",
+        "libnss3"
+      ],
       "maintainer": "Saiki <saiki.planificador@gmail.com>"
     },
     "mac": {
@@ -66,6 +71,7 @@
     "electron": "^28.3.3",
     "electron-builder": "^24.13.3",
     "esbuild": "^0.28.1",
+    "javascript-obfuscator": "^5.5.0",
     "playwright-core": "^1.61.1",
     "typescript": "^7.0.2",
     "vitest": "^4.1.10"
