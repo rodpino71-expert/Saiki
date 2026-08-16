@@ -2,6 +2,10 @@
 
 Planificador de carga cognitiva y resiliencia personal. Aplicación de escritorio (Electron) para Linux, macOS y Windows.
 
+## Manual de usuario
+
+[Manual_de_Usuario_Saiki.md](./Manual_de_Usuario_Saiki.md) · [versión HTML autocontenida](./Manual_de_Usuario_Saiki.html)
+
 ## Licencia
 
 Software comercial. El código fuente es visible por transparencia, pero **todos los derechos están reservados** — ver [LICENSE](./LICENSE). Uso de la aplicación compilada requiere una licencia paga, disponible en [saiki-resilience.netlify.app](https://saiki-resilience.netlify.app).
