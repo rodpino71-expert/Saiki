@@ -25,4 +25,4 @@
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
     Permissions-Policy = "camera=(), microphone=(), geolocation=(), payment=()"
-    Content-Security-Policy = "default-src 'self'; img-src 'self'; style-src 'self'; script-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'"
+    Content-Security-Policy = "default-src 'self'; img-src 'self' data:; style-src 'self' 'sha256-a3V9xB5HNgvu4jRnyTEMc3WIPgtEPclDnWz1uxFnXC4='; script-src 'sha256-cEG3cDn9t07O4vdc+RguMID3zNpROFn1ZEgWIiAApfA='; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'"
