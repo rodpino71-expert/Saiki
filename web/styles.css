@@ -226,6 +226,56 @@ section { padding: 64px 0; border-top: 1px solid var(--line); }
   .bento-lg, .bento-wide { grid-column: span 2; }
 }
 
+/* ---------- Descargas ---------- */
+
+.downloads { text-align: center; }
+.downloads .eyebrow { text-align: center; }
+.downloads h2 { font-size: 27px; margin: 0 0 12px; }
+
+.download-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 14px;
+  max-width: 860px;
+  margin: 28px auto 0;
+}
+
+.download-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 20px 14px;
+  background: var(--paper-surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  color: var(--ink);
+  text-decoration: none;
+  font-family: var(--sans);
+  box-shadow: var(--shadow);
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.download-btn:hover { box-shadow: var(--shadow-hover); transform: translateY(-2px); }
+
+.download-btn svg { width: 34px; height: 34px; }
+
+.dl-name { font-weight: 600; font-size: 15px; }
+
+.dl-file {
+  color: var(--ink-muted);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.download-note {
+  margin-top: 16px;
+  color: var(--ink-muted);
+  font-family: var(--sans);
+  font-size: 13px;
+}
+
 /* ---------- Screenshots ---------- */
 
 .screenshot-grid {
