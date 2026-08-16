@@ -7,8 +7,12 @@
     "name": "Rodrigo Pino",
     "email": "rodpino71@gmail.com"
   },
-  "homepage": "https://github.com/saiki/planificador",
-  "license": "MIT",
+  "homepage": "https://github.com/rodpino71-expert/Saiki",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rodpino71-expert/Saiki.git"
+  },
+  "license": "UNLICENSED",
   "scripts": {
     "start": "electron .",
     "build:dominio": "esbuild src/dominio/index.ts --bundle --platform=node --target=node18 --format=cjs --outfile=dist/dominio/index.js",
