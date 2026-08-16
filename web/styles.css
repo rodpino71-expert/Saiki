@@ -325,14 +325,31 @@ section { padding: 72px 0; border-top: 1px solid var(--line); }
   background: var(--line);
 }
 
-.window-optimismo .window-bar { background: var(--optimismo-bg); }
-.window-optimismo .window-bar span { background: var(--optimismo-primary); opacity: 0.4; }
+.window-bar-neutralidad { background: #f0f2f5; }
+.window-bar-neutralidad span { background: #3b82f6; opacity: 0.45; }
 
-.window-certeza .window-bar { background: var(--certeza-bg); }
-.window-certeza .window-bar span { background: var(--certeza-primary); opacity: 0.4; }
+.window-bar-optimismo { background: var(--optimismo-bg); }
+.window-bar-optimismo span { background: var(--optimismo-primary); opacity: 0.45; }
 
-.window-tranquilidad .window-bar { background: var(--tranquilidad-surface); }
-.window-tranquilidad .window-bar span { background: var(--tranquilidad-primary); opacity: 0.6; }
+.window-bar-certeza { background: var(--certeza-bg); }
+.window-bar-certeza span { background: var(--certeza-primary); opacity: 0.45; }
+
+.window-bar-tranquilidad { background: var(--tranquilidad-surface); }
+.window-bar-tranquilidad span { background: var(--tranquilidad-primary); opacity: 0.6; }
+
+.window-bar-fortaleza { background: var(--fortaleza-surface); }
+.window-bar-fortaleza span { background: var(--fortaleza-primary); opacity: 0.6; }
+
+.shot-label {
+  padding: 8px 14px;
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+  border-top: 1px solid var(--line);
+}
 
 .window-frame img {
   display: block;
